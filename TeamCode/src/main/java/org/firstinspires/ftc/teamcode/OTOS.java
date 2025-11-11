@@ -13,46 +13,48 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "OTOS", group = "Draft")
-public class Motor extends LinearOpMode
-{
+public class OTOS extends LinearOpMode {
+
     private SparkFunOTOS otos;
 
-    public void runOpMode()
-    {
-        //setting PID Controllers
+    @Override
+    public void runOpMode() throws InterruptedException {
 
-        //method I made below that initialized hardware
         initializeHardware();
 
-        waitForStart(); //FTC SDK method which wait for the "Play"
+        waitForStart();
 
-        // MAIN PART OF THE CODE!!!!!!!!!!!!
-        while (opModeIsActive())
-        {
-            otos.calibrateImu();
-            telemetry.addData("otospos_x",otos.getPosition());
+        while (opModeIsActive()) {
+
+            SparkFunOTOS.Pose2D pos = otos.getPosition();
+
+            telemetry.addData("X (in)", pos.x);
+            telemetry.addData("Y (in)", pos.y);
+            telemetry.addData("Heading (deg)", pos.h);
             telemetry.update();
         }
     }
 
-
-    // Method to stop all motors
-
-    private void initializeHardware()
-    {
-        // Hardware initialization
+    private void initializeHardware() {
 
         otos = hardwareMap.get(SparkFunOTOS.class,"otos");
-        otos.setLinearUnit(DistanceUnit.INCH);     // choose your units
+        otos.setLinearUnit(DistanceUnit.INCH);
         otos.setAngularUnit(AngleUnit.DEGREES);
 
-        boolean connected = otos.begin();          // check presence
-        boolean imuOk     = otos.calibrateImu();   // ~0.6 s for full (still robot)
-        otos.resetTracking();                      // zero pose at start
+        boolean connected = otos.begin();
+        if (!connected) {
+            telemetry.addLine("OTOS not connected!");
+            telemetry.update();
+            sleep(3000);
+            return;
+        }
+
+        // Only do this ONCE while robot is still
+        boolean imuOk = otos.calibrateImu();
+        otos.resetTracking();   // start odometry at (0,0,0)
 
         telemetry.addData("OTOS connected", connected);
         telemetry.addData("IMU calibrated", imuOk);
         telemetry.update();
     }
-
 }
