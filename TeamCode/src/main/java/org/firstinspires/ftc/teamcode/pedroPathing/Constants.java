@@ -40,7 +40,7 @@ public class Constants {
             .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE);
             //EDIT the values by tuning
-            //.xVelocity(velocity)
+            //.xVelocity(velocity);
             //.yVelocity(velocity)
             //.forwardZeroPowerAcceleration(deceleration)
             //.forwardZeroPowerAcceleration(deceleration)
